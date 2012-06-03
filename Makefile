@@ -1,5 +1,5 @@
 
-MINIEXPDIR=../../libdjvu
+MINIEXPDIR=.
 MINIEXPC=${MINIEXPDIR}/miniexp.cpp
 MINIEXPH=${MINIEXPDIR}/miniexp.h
 
