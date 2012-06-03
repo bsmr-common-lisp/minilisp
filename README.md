@@ -1,11 +1,3 @@
-minilisp
-========
-
-minilisp in a single package, originally by Leon Bottou
-
-
----X---X--- the original README ---X---X---
-
 MINIEXP/MINILISP
 ----------------
 
