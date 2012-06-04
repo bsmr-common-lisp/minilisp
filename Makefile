@@ -3,6 +3,9 @@ MINIEXPDIR=.
 MINIEXPC=${MINIEXPDIR}/miniexp.cpp
 MINIEXPH=${MINIEXPDIR}/miniexp.h
 
+CXX		= g++
+CXXFLAGS	= -Wall -s -O3
+
 
 minilisp: minilisp.o miniexp.o
 	${CXX} ${CXXFLAGS} -o minilisp  minilisp.o miniexp.o -lm

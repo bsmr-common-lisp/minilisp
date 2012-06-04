@@ -1,4 +1,4 @@
-/* -*- C -*-
+/* -*- C++ -*-
 // -------------------------------------------------------------------
 // MiniExp - Library for handling lisp expressions
 // Copyright (c) 2005  Leon Bottou
@@ -20,31 +20,29 @@
 #define MINIEXP_H
 
 #ifdef __cplusplus
-extern "C" { 
-# ifndef __cplusplus
+extern "C"
+{
+#ifndef __cplusplus
 }
-# endif
+#endif
 #endif
 
 #ifndef MINILISPAPI
-# ifdef WIN32
-#  ifdef DLL_EXPORT
-#   define MINILISPAPI __declspec(dllexport)
-#  else
-#   define MINILISPAPI __declspec(dllimport)
-#  endif
-# endif
+#ifdef WIN32
+#ifdef DLL_EXPORT
+#define MINILISPAPI __declspec(dllexport)
+#else
+#define MINILISPAPI __declspec(dllimport)
+#endif
+#endif
 #endif
 #ifndef MINILISPAPI
-# define MINILISPAPI /**/
+#define MINILISPAPI /**/
 #endif
-
-#include <stddef.h>  
-
+#include <stddef.h>
 /* -------------------------------------------------- */
 /* LISP EXPRESSIONS                                   */
 /* -------------------------------------------------- */
-
 /* miniexp_t -- 
    Opaque pointer type representing a lisp expression,
    also known as s-expression. 
@@ -54,9 +52,7 @@ extern "C" {
    program <djvused> use s-expressions to describe the 
    hidden text information and the navigation 
    information */
-
-
-typedef struct miniexp_s* miniexp_t;
+typedef struct miniexp_s *miniexp_t;
 
 
 /* There are four basic types of lisp expressions,
@@ -75,25 +71,31 @@ typedef struct miniexp_s* miniexp_t;
 /* miniexp_numberp --
    Tests if an expression is a number. */
 
-static inline int miniexp_numberp(miniexp_t p) {
-  return (((size_t)(p)&3)==3);
+static inline int
+miniexp_numberp (miniexp_t p)
+{
+  return (((size_t) (p) & 3) == 3);
 }
 
 /* miniexp_to_int --
    Returns the integer corresponding to a lisp expression.
    Assume that the expression is indeed a number. */
 
-static inline int miniexp_to_int(miniexp_t p) {
-  return (((int)(size_t)(p))>>2);
+static inline int
+miniexp_to_int (miniexp_t p)
+{
+  return (((int) (size_t) (p)) >> 2);
 }
 
 /* miniexp_number --
    Constructs the expression corresponding to an integer. */
 
-static inline miniexp_t miniexp_number(int x) {
-  return (miniexp_t) (size_t) ((x<<2)|3);
+static inline miniexp_t
+miniexp_number (int x)
+{
+  return (miniexp_t) (size_t) ((x << 2) | 3);
 }
-   
+
 
 
 /* -------- SYMBOLS -------- */
@@ -108,20 +110,22 @@ static inline miniexp_t miniexp_number(int x) {
 /* miniexp_symbolp --
    Tests if an expression is a symbol. */
 
-static inline int miniexp_symbolp(miniexp_t p) {
-  return ((((size_t)p)&3)==2);
+static inline int
+miniexp_symbolp (miniexp_t p)
+{
+  return ((((size_t) p) & 3) == 2);
 }
 
 /* miniexp_to_name --
    Returns the symbol name as a string.
    Returns NULL if the expression is not a symbol. */
-   
-MINILISPAPI const char* miniexp_to_name(miniexp_t p);
+
+MINILISPAPI const char *miniexp_to_name (miniexp_t p);
 
 /* miniexp_symbol --
    Returns the unique symbol expression with the specified name. */
 
-MINILISPAPI miniexp_t miniexp_symbol(const char *name);
+MINILISPAPI miniexp_t miniexp_symbol (const char *name);
 
 
 
@@ -146,38 +150,46 @@ MINILISPAPI miniexp_t miniexp_symbol(const char *name);
 #define miniexp_dummy ((miniexp_t)(size_t)2)
 
 /* miniexp_listp --
-   Tests if an expression is either a pair or the empty list. */   
+   Tests if an expression is either a pair or the empty list. */
 
-static inline int miniexp_listp(miniexp_t p) {
-  return ((((size_t)p)&3)==0);
+static inline int
+miniexp_listp (miniexp_t p)
+{
+  return ((((size_t) p) & 3) == 0);
 }
 
 /* miniexp_consp --
    Tests if an expression is a pair. */
 
-static inline int miniexp_consp(miniexp_t p) {
-  return p && miniexp_listp(p);
+static inline int
+miniexp_consp (miniexp_t p)
+{
+  return p && miniexp_listp (p);
 }
 
 /* miniexp_length --
    Returns the length of a list.
    Returns 0 for non lists, -1 for circular lists. */
 
-MINILISPAPI int miniexp_length(miniexp_t p);
+MINILISPAPI int miniexp_length (miniexp_t p);
 
 /* miniexp_car --
    miniexp_cdr --
    Returns the car or cdr of a pair. */
 
-static inline miniexp_t miniexp_car(miniexp_t p) {
-  if (miniexp_consp(p))
-    return ((miniexp_t*)p)[0];
+static inline miniexp_t
+miniexp_car (miniexp_t p)
+{
+  if (miniexp_consp (p))
+    return ((miniexp_t *) p)[0];
   return miniexp_nil;
 }
 
-static inline miniexp_t miniexp_cdr(miniexp_t p) {
-  if (miniexp_consp(p))
-    return ((miniexp_t*)p)[1];
+static inline miniexp_t
+miniexp_cdr (miniexp_t p)
+{
+  if (miniexp_consp (p))
+    return ((miniexp_t *) p)[1];
   return miniexp_nil;
 }
 
@@ -188,30 +200,30 @@ MINILISPAPI miniexp_t miniexp_caar (miniexp_t p);
 MINILISPAPI miniexp_t miniexp_cadr (miniexp_t p);
 MINILISPAPI miniexp_t miniexp_cdar (miniexp_t p);
 MINILISPAPI miniexp_t miniexp_cddr (miniexp_t p);
-MINILISPAPI miniexp_t miniexp_caddr(miniexp_t p);
-MINILISPAPI miniexp_t miniexp_cdddr(miniexp_t p);
+MINILISPAPI miniexp_t miniexp_caddr (miniexp_t p);
+MINILISPAPI miniexp_t miniexp_cdddr (miniexp_t p);
 
 /* miniexp_nth --
    Returns the n-th element of a list. */
 
-MINILISPAPI miniexp_t miniexp_nth(int n, miniexp_t l);
+MINILISPAPI miniexp_t miniexp_nth (int n, miniexp_t l);
 
 /* miniexp_cons --
    Constructs a pair. */
 
-MINILISPAPI miniexp_t miniexp_cons(miniexp_t car, miniexp_t cdr);
+MINILISPAPI miniexp_t miniexp_cons (miniexp_t car, miniexp_t cdr);
 
 /* miniexp_rplaca --
    miniexp_rplacd --
    Changes the car or the cdr of a pair. */
 
-MINILISPAPI miniexp_t miniexp_rplaca(miniexp_t pair, miniexp_t newcar);
-MINILISPAPI miniexp_t miniexp_rplacd(miniexp_t pair, miniexp_t newcdr);
+MINILISPAPI miniexp_t miniexp_rplaca (miniexp_t pair, miniexp_t newcar);
+MINILISPAPI miniexp_t miniexp_rplacd (miniexp_t pair, miniexp_t newcdr);
 
 /* miniexp_reverse --
    Reverses a list in place. */
 
-MINILISPAPI miniexp_t miniexp_reverse(miniexp_t p);
+MINILISPAPI miniexp_t miniexp_reverse (miniexp_t p);
 
 
 /* -------- OBJECTS (GENERIC) -------- */
@@ -224,22 +236,24 @@ MINILISPAPI miniexp_t miniexp_reverse(miniexp_t p);
 /* miniexp_objectp --
    Tests if an expression is an object. */
 
-static inline int miniexp_objectp(miniexp_t p) {
-  return ((((size_t)p)&3)==1);
+static inline int
+miniexp_objectp (miniexp_t p)
+{
+  return ((((size_t) p) & 3) == 1);
 }
 
 /* miniexp_classof --
    Returns the symbolic class of an expression.
    Returns nil if the expression is not an object. */
 
-MINILISPAPI miniexp_t miniexp_classof(miniexp_t p);
+MINILISPAPI miniexp_t miniexp_classof (miniexp_t p);
 
 /* miniexp_isa --
    If <p> is an instance of class named <c> or one of
    its subclasses, returns the actual class name.
    Otherwise returns miniexp_nil. */
 
-MINILISPAPI miniexp_t miniexp_isa(miniexp_t p, miniexp_t c);
+MINILISPAPI miniexp_t miniexp_isa (miniexp_t p, miniexp_t c);
 
 
 /* -------- OBJECTS (STRINGS) -------- */
@@ -247,7 +261,7 @@ MINILISPAPI miniexp_t miniexp_isa(miniexp_t p, miniexp_t c);
 /* miniexp_stringp --
    Tests if an expression is a string. */
 
-MINILISPAPI int miniexp_stringp(miniexp_t p);
+MINILISPAPI int miniexp_stringp (miniexp_t p);
 
 /* miniexp_to_str --
    Returns the c string represented by the expression.
@@ -255,23 +269,23 @@ MINILISPAPI int miniexp_stringp(miniexp_t p);
    The c string remains valid as long as the
    corresponding lisp object exists. */
 
-MINILISPAPI const char *miniexp_to_str(miniexp_t p);
+MINILISPAPI const char *miniexp_to_str (miniexp_t p);
 
 /* miniexp_string --
    Constructs a string expression by copying string s. */
 
-MINILISPAPI miniexp_t miniexp_string(const char *s);
+MINILISPAPI miniexp_t miniexp_string (const char *s);
 
 /* miniexp_substring --
    Constructs a string expression by copying 
    at most n character from string s. */
 
-MINILISPAPI miniexp_t miniexp_substring(const char *s, int n);
+MINILISPAPI miniexp_t miniexp_substring (const char *s, int n);
 
 /* miniexp_concat --
    Concat all the string expressions in list <l>. */
 
-MINILISPAPI miniexp_t miniexp_concat(miniexp_t l);
+MINILISPAPI miniexp_t miniexp_concat (miniexp_t l);
 
 
 
@@ -350,17 +364,17 @@ MINILISPAPI miniexp_t miniexp_concat(miniexp_t l);
    more practical to control the garbage collector
    invocations with <minilisp_acquire_gc_lock()> and
    <minilisp_release_gc_lock()>...  */
-   
+
 
 /* minilisp_gc --
    Invokes the garbage collector now. */
 
-MINILISPAPI void minilisp_gc(void);
+MINILISPAPI void minilisp_gc (void);
 
 /* minilisp_info --
    Prints garbage collector statistics. */
 
-MINILISPAPI void minilisp_info(void);
+MINILISPAPI void minilisp_info (void);
 
 /* minilisp_acquire_gc_lock --
    minilisp_release_gc_lock --
@@ -386,8 +400,8 @@ MINILISPAPI void minilisp_info(void);
    Disabling garbage collection for a long time 
    increases the memory consumption. */
 
-MINILISPAPI miniexp_t minilisp_acquire_gc_lock(miniexp_t);
-MINILISPAPI miniexp_t minilisp_release_gc_lock(miniexp_t);
+MINILISPAPI miniexp_t minilisp_acquire_gc_lock (miniexp_t);
+MINILISPAPI miniexp_t minilisp_release_gc_lock (miniexp_t);
 
 /* minivar_t --
    The minivar type. */
@@ -401,29 +415,29 @@ typedef struct minivar_s minivar_t;
    minivar_free --
    Wrappers for creating and destroying minivars in C. */
 
-MINILISPAPI minivar_t *minivar_alloc(void);
-MINILISPAPI void minivar_free(minivar_t *v);
+MINILISPAPI minivar_t *minivar_alloc (void);
+MINILISPAPI void minivar_free (minivar_t * v);
 
 /* minivar_pointer --
    Wrappers to access the lisp expression referenced
    by a minivar. This function returns a pointer
    to the actual miniexp_t variable. */
 
-MINILISPAPI miniexp_t *minivar_pointer(minivar_t *v);
+MINILISPAPI miniexp_t *minivar_pointer (minivar_t * v);
 
 /* minilisp_debug -- 
    Setting the debug flag runs the garbage collector 
    very often. This is extremely slow, but can be
    useful to debug memory allocation problems. */
 
-MINILISPAPI void minilisp_debug(int debugflag);
+MINILISPAPI void minilisp_debug (int debugflag);
 
 /* minilisp_finish --
    Deallocates everything.  This is only useful when using
    development tools designed to check for memory leaks.  
    No miniexp function can be used after calling this. */
 
-MINILISPAPI void minilisp_finish(void);
+MINILISPAPI void minilisp_finish (void);
 
 
 /* -------------------------------------------------- */
@@ -480,7 +494,7 @@ MINILISPAPI void minilisp_finish(void);
    perform pretty line breaks for this intended number of columns.
    This function can cause a garbage collection to occur. */
 
-MINILISPAPI miniexp_t miniexp_pname(miniexp_t p, int width);
+MINILISPAPI miniexp_t miniexp_pname (miniexp_t p, int width);
 
 
 /* miniexp_io_t -- 
@@ -503,13 +517,13 @@ MINILISPAPI miniexp_t miniexp_pname(miniexp_t p, int width);
    variable pointed by <io.p_macroqueue>.  */
 
 typedef struct miniexp_io_s miniexp_io_t;
-typedef miniexp_t (*miniexp_macrochar_t)(miniexp_io_t*);
+typedef miniexp_t (*miniexp_macrochar_t) (miniexp_io_t *);
 
 struct miniexp_io_s
 {
-  int (*fputs)(miniexp_io_t*, const char*);
-  int (*fgetc)(miniexp_io_t*);
-  int (*ungetc)(miniexp_io_t*, int);
+  int (*fputs) (miniexp_io_t *, const char *);
+  int (*fgetc) (miniexp_io_t *);
+  int (*ungetc) (miniexp_io_t *, int);
   void *data[4];
   int *p_print7bits;
   miniexp_macrochar_t *p_macrochar;
@@ -527,15 +541,15 @@ struct miniexp_io_s
    and <p_macroqueue> are set to point to zero-initialized
    shared variables. */
 
-MINILISPAPI void miniexp_io_init(miniexp_io_t *io);
+MINILISPAPI void miniexp_io_init (miniexp_io_t * io);
 
 /* miniexp_io_set_{input,output} --
    Override the file descriptor used for input or output.
    You must call <miniexp_io_init> before. */
 
 #if defined(stdin)
-MINILISPAPI void miniexp_io_set_output(miniexp_io_t *io, FILE *f);
-MINILISPAPI void miniexp_io_set_input(miniexp_io_t *io, FILE *f);
+MINILISPAPI void miniexp_io_set_output (miniexp_io_t * io, FILE * f);
+MINILISPAPI void miniexp_io_set_input (miniexp_io_t * io, FILE * f);
 #endif
 
 /* miniexp_read_r --
@@ -543,15 +557,15 @@ MINILISPAPI void miniexp_io_set_input(miniexp_io_t *io, FILE *f);
    invoking <minilisp_getc> and <minilisp_ungetc>.
    Returns <miniexp_dummy> when an error occurs. */
 
-MINILISPAPI miniexp_t miniexp_read_r(miniexp_io_t *io);
+MINILISPAPI miniexp_t miniexp_read_r (miniexp_io_t * io);
 
 /* miniexp_prin_r, miniexp_print_r --
    Prints a minilisp expression by repeatedly invoking <minilisp_puts>.
    Only <minilisp_print> outputs a final newline character. 
    These functions are safe to call anytime. */
 
-MINILISPAPI miniexp_t miniexp_prin_r(miniexp_io_t *io, miniexp_t p);
-MINILISPAPI miniexp_t miniexp_print_r(miniexp_io_t *io, miniexp_t p);
+MINILISPAPI miniexp_t miniexp_prin_r (miniexp_io_t * io, miniexp_t p);
+MINILISPAPI miniexp_t miniexp_print_r (miniexp_io_t * io, miniexp_t p);
 
 /* miniexp_pprin_r, miniexp_pprint_r --
    Prints a minilisp expression with reasonably pretty line breaks. 
@@ -559,19 +573,20 @@ MINILISPAPI miniexp_t miniexp_print_r(miniexp_io_t *io, miniexp_t p);
    Only <minilisp_pprint> outputs a final newline character. 
    These functions can cause a garbage collection to occur. */
 
-MINILISPAPI miniexp_t miniexp_pprin_r(miniexp_io_t *io, miniexp_t p, int w);
-MINILISPAPI miniexp_t miniexp_pprint_r(miniexp_io_t *io, miniexp_t p, int w);
+MINILISPAPI miniexp_t miniexp_pprin_r (miniexp_io_t * io, miniexp_t p, int w);
+MINILISPAPI miniexp_t miniexp_pprint_r (miniexp_io_t * io, miniexp_t p,
+					int w);
 
 /* miniexp_io, miniexp_read, miniexp_{,p}prin{,t} --
    Variable <miniexp_io> contains the pre-initialized input/output data
    structure that is used by the non-reentrant input/output functions. */
 
 extern MINILISPAPI miniexp_io_t miniexp_io;
-MINILISPAPI miniexp_t miniexp_read(void);
-MINILISPAPI miniexp_t miniexp_prin(miniexp_t p);
-MINILISPAPI miniexp_t miniexp_print(miniexp_t p);
-MINILISPAPI miniexp_t miniexp_pprin(miniexp_t p, int width);
-MINILISPAPI miniexp_t miniexp_pprint(miniexp_t p, int width);
+MINILISPAPI miniexp_t miniexp_read (void);
+MINILISPAPI miniexp_t miniexp_prin (miniexp_t p);
+MINILISPAPI miniexp_t miniexp_print (miniexp_t p);
+MINILISPAPI miniexp_t miniexp_pprin (miniexp_t p, int width);
+MINILISPAPI miniexp_t miniexp_pprint (miniexp_t p, int width);
 
 /* miniexp_macrochar, miniexp_macroqueue --
    Function <miniexp_io_init> causes the corresponding pointers in the
@@ -581,21 +596,21 @@ MINILISPAPI miniexp_t miniexp_pprint(miniexp_t p, int width);
    function return a list of <miniexp_t> that function <miniexp_read_r>
    returns one-by-one before processing more input. This list is in fact
    stored in the variable pointed to by <io.macroqueue>. */
- 
+
 extern MINILISPAPI miniexp_macrochar_t miniexp_macrochar[128];
 extern MINILISPAPI minivar_t miniexp_macroqueue;
 
 
 /* Backward compatibility. */
-extern MINILISPAPI int (*minilisp_puts)(const char *);
-extern MINILISPAPI int (*minilisp_getc)(void);
-extern MINILISPAPI int (*minilisp_ungetc)(int);
-extern MINILISPAPI miniexp_t (*minilisp_macrochar_parser[128])(void);
-extern MINILISPAPI miniexp_t (*minilisp_diezechar_parser[128])(void);
+extern MINILISPAPI int (*minilisp_puts) (const char *);
+extern MINILISPAPI int (*minilisp_getc) (void);
+extern MINILISPAPI int (*minilisp_ungetc) (int);
+extern MINILISPAPI miniexp_t (*minilisp_macrochar_parser[128]) (void);
+extern MINILISPAPI miniexp_t (*minilisp_diezechar_parser[128]) (void);
 extern MINILISPAPI int minilisp_print_7bits;
 #if defined(stdin)
-MINILISPAPI void minilisp_set_output(FILE *f);
-MINILISPAPI void minilisp_set_input(FILE *f);
+MINILISPAPI void minilisp_set_output (FILE * f);
+MINILISPAPI void minilisp_set_input (FILE * f);
 #endif
 
 /* -------------------------------------------------- */
@@ -603,36 +618,53 @@ MINILISPAPI void minilisp_set_input(FILE *f);
 /* -------------------------------------------------- */
 
 #ifdef __cplusplus
-# ifndef __cplusplus
+#ifndef __cplusplus
 {
-# endif
-} // extern "C"
+#endif
+}				// extern "C"
 
-typedef void minilisp_mark_t(miniexp_t *pp);
+typedef void minilisp_mark_t (miniexp_t * pp);
 
 /* -------- MINIVARS -------- */
 
 /* minivar_t --
    A class for protected garbage collector variables. */
 
-class MINILISPAPI 
-minivar_t 
+class MINILISPAPI minivar_t
 {
   miniexp_t data;
   minivar_t *next;
   minivar_t **pprev;
 public:
-  minivar_t();
-  minivar_t(miniexp_t p);
-  minivar_t(const minivar_t &v);
-  operator miniexp_t&() { return data; }
-  miniexp_t* operator&() { return &data; }
-  minivar_t& operator=(miniexp_t p) { data = p; return *this; }
-  minivar_t& operator=(const minivar_t &v) { data = v.data; return *this; }
-  ~minivar_t() { if ((*pprev = next)) next->pprev = pprev; }
+    minivar_t ();
+    minivar_t (miniexp_t p);
+    minivar_t (const minivar_t & v);
+  operator  miniexp_t & ()
+  {
+    return data;
+  }
+  miniexp_t *operator& ()
+  {
+    return &data;
+  }
+  minivar_t & operator= (miniexp_t p)
+  {
+    data = p;
+    return *this;
+  }
+  minivar_t & operator= (const minivar_t & v)
+  {
+    data = v.data;
+    return *this;
+  }
+  ~minivar_t ()
+  {
+    if ((*pprev = next))
+      next->pprev = pprev;
+  }
 #ifdef MINIEXP_IMPLEMENTATION
   static minivar_t *vars;
-  static void mark(minilisp_mark_t*);
+  static void mark (minilisp_mark_t *);
 #endif
 };
 
@@ -644,30 +676,30 @@ public:
    The base class for c++ objects 
    represented by object expressions. */
 
-class MINILISPAPI 
-miniobj_t {
- public:
-  virtual ~miniobj_t();
+class MINILISPAPI miniobj_t
+{
+public:
+  virtual ~ miniobj_t ();
 
   /* --- stuff defined by MINIOBJ_DECLARE --- */
   /* classname: a symbol characterizing this class. */
   static const miniexp_t classname;
   /* classof: class name symbol for this object. */
-  virtual miniexp_t classof() const = 0;
+  virtual miniexp_t classof () const = 0;
   /* isa -- tests if this is an instance of <classname>. */
-  virtual bool isa(miniexp_t classname) const;
+  virtual bool isa (miniexp_t classname) const;
 
   /* --- optional stuff --- */
   /* pname: returns a printable name for this object.
      The caller must deallocate the result with delete[]. */
-  virtual char *pname() const;
+  virtual char *pname () const;
   /* mark: iterates over miniexps contained by this object
      for garbage collecting purposes. */
-  virtual void mark(minilisp_mark_t*);
+  virtual void mark (minilisp_mark_t *);
   /* destroy: called by the garbage collector to
      deallocate the object. Defaults to 'delete this'. */
-  virtual void destroy();
-     
+  virtual void destroy ();
+
 };
 
 /* MINIOBJ_DECLARE --
@@ -678,7 +710,7 @@ miniobj_t {
 #define MINIOBJ_DECLARE(cls, supercls, name) \
   public: static const miniexp_t classname; \
           virtual miniexp_t classof() const; \
-          virtual bool isa(miniexp_t) const; 
+          virtual bool isa(miniexp_t) const;
 
 #define MINIOBJ_IMPLEMENT(cls, supercls, name)\
   const miniexp_t cls::classname = miniexp_symbol(name);\
@@ -694,16 +726,18 @@ miniobj_t {
    object expression.
 */
 
-static inline miniobj_t *miniexp_to_obj(miniexp_t p) {
-  if (miniexp_objectp(p))
-    return ((miniobj_t**)(((size_t)p)&~((size_t)3)))[0];
+static inline miniobj_t *
+miniexp_to_obj (miniexp_t p)
+{
+  if (miniexp_objectp (p))
+    return ((miniobj_t **) (((size_t) p) & ~((size_t) 3)))[0];
   return 0;
 }
 
 /* miniexp_object --
    Create an object expression for a given object. */
 
-MINILISPAPI miniexp_t miniexp_object(miniobj_t *obj);
+MINILISPAPI miniexp_t miniexp_object (miniobj_t * obj);
 
 
 #endif /* __cplusplus */
